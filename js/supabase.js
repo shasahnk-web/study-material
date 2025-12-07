@@ -55,7 +55,7 @@ async function signOut() {
 
 async function handleLogout() {
   await signOut();
-  window.location.href = '/';
+  window.location.href = '/index.html';
 }
 
 async function getCurrentUser() {
@@ -97,12 +97,50 @@ async function isAdmin() {
 
 async function checkUserBan() {
   if (!supabase) return null;
-  const { data, error } = await supabase.rpc('get_user_ban_status');
-  if (error) {
+  const user = await getCurrentUser();
+  if (!user) return null;
+  
+  const { data, error } = await supabase
+    .from('user_bans')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .single();
+  
+  if (error && error.code !== 'PGRST116') {
     console.error('Error checking ban:', error);
     return null;
   }
-  return data;
+  
+  if (data) {
+    if (data.ban_until && new Date(data.ban_until) < new Date()) {
+      await supabase.from('user_bans').update({ is_active: false }).eq('id', data.id);
+      await supabase.from('profiles').update({ is_banned: false }).eq('id', user.id);
+      return null;
+    }
+    return {
+      is_active: true,
+      reason: data.reason,
+      ban_until: data.ban_until,
+      ban_type: data.ban_type
+    };
+  }
+  return null;
+}
+
+async function enforceUserBan() {
+  const user = await getCurrentUser();
+  if (!user) return false;
+  
+  const banStatus = await checkUserBan();
+  if (banStatus && banStatus.is_active) {
+    await signOut();
+    sessionStorage.setItem('ban_reason', banStatus.reason);
+    sessionStorage.setItem('ban_until', banStatus.ban_until || '');
+    window.location.href = '/pages/login.html?banned=true';
+    return true;
+  }
+  return false;
 }
 
 async function getCategories() {
@@ -218,7 +256,10 @@ async function uploadAvatar(file) {
 
 async function getAllUsers() {
   if (!supabase) return [];
-  const { data, error } = await supabase.rpc('get_all_users_admin');
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
   if (error) {
     console.error('Error fetching users:', error);
     return [];
@@ -319,6 +360,7 @@ window.getUserProfile = getUserProfile;
 window.updateProfile = updateProfile;
 window.isAdmin = isAdmin;
 window.checkUserBan = checkUserBan;
+window.enforceUserBan = enforceUserBan;
 window.getCategories = getCategories;
 window.addCategory = addCategory;
 window.updateCategory = updateCategory;
