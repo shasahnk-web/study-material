@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - StudyHub</title>
+  <title>Admin Dashboard - AJ Study Material</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,7 +14,7 @@
 <body>
   <div class="admin-layout">
     <aside class="admin-sidebar">
-      <a href="/" class="logo">StudyHub</a>
+      <a href="/" class="logo"><img src="/logo.png" alt="AJ Study Material" style="height: 40px;"></a>
       <ul class="sidebar-nav">
         <li><a href="#dashboard" class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
         <li><a href="#materials" data-section="materials"><i class="fas fa-book"></i> Materials</a></li>
@@ -39,3 +42,732 @@
               <span>Total Materials</span>
               <i class="fas fa-book"></i>
             </div>
+            <h3 id="totalMaterials">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Total Users</span>
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 id="totalUsers">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Today's Visits</span>
+              <i class="fas fa-eye"></i>
+            </div>
+            <h3 id="todayVisits">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Categories</span>
+              <i class="fas fa-folder"></i>
+            </div>
+            <h3 id="totalCategories">0</h3>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2>Recent Materials</h2>
+            <button class="btn-primary" onclick="showAddMaterialModal()">
+              <i class="fas fa-plus"></i> Add Material
+            </button>
+          </div>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recentMaterialsTable">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Materials Section -->
+      <div id="materialsSection" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h1>Manage Materials</h1>
+          <button class="btn-primary" onclick="showAddMaterialModal()">
+            <i class="fas fa-plus"></i> Add Material
+          </button>
+        </div>
+
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="allMaterialsTable">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Categories Section -->
+      <div id="categoriesSection" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h1>Manage Categories</h1>
+          <button class="btn-primary" onclick="showAddCategoryModal()">
+            <i class="fas fa-plus"></i> Add Category
+          </button>
+        </div>
+
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Materials</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="categoriesTable">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Users Section -->
+      <div id="usersSection" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h1>Manage Users</h1>
+        </div>
+
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Analytics Section -->
+      <div id="analyticsSection" class="admin-section" style="display: none;">
+        <div class="admin-header">
+          <h1>Site Analytics</h1>
+        </div>
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Total Visits</span>
+              <i class="fas fa-eye"></i>
+            </div>
+            <h3 id="analyticsTotal">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Today</span>
+              <i class="fas fa-calendar-day"></i>
+            </div>
+            <h3 id="analyticsToday">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>This Week</span>
+              <i class="fas fa-calendar-week"></i>
+            </div>
+            <h3 id="analyticsWeek">0</h3>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Banned Users</span>
+              <i class="fas fa-ban"></i>
+            </div>
+            <h3 id="analyticsBanned">0</h3>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Material Modal -->
+  <div class="modal" id="materialModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="materialModalTitle">Add New Material</h2>
+        <button class="modal-close" onclick="closeModal('materialModal')">&times;</button>
+      </div>
+      <form id="materialForm">
+        <input type="hidden" id="materialId">
+        <div class="form-group">
+          <label for="materialTitle">Title</label>
+          <input type="text" id="materialTitle" placeholder="Enter material title" required>
+        </div>
+        <div class="form-group">
+          <label for="materialDescription">Description</label>
+          <textarea id="materialDescription" placeholder="Brief description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="materialCategory">Category</label>
+          <select id="materialCategory">
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="materialTelegram">Telegram Link</label>
+          <input type="url" id="materialTelegram" placeholder="https://t.me/..." required>
+        </div>
+        <div class="form-group">
+          <label>Image</label>
+          <div class="form-group">
+            <label for="materialImageUrl">Image URL (or upload below)</label>
+            <input type="text" id="materialImageUrl" placeholder="https://...">
+          </div>
+          <div class="file-upload" onclick="document.getElementById('imageInput').click()">
+            <input type="file" id="imageInput" accept="image/*" onchange="previewImage(this)">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Click to upload image</p>
+          </div>
+          <img id="imagePreview" class="preview-image" style="display: none;">
+        </div>
+        <div class="form-group">
+          <label for="materialStatus">Status</label>
+          <select id="materialStatus">
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+          </select>
+        </div>
+        <button type="submit" class="auth-btn">Save Material</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add/Edit Category Modal -->
+  <div class="modal" id="categoryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="categoryModalTitle">Add New Category</h2>
+        <button class="modal-close" onclick="closeModal('categoryModal')">&times;</button>
+      </div>
+      <form id="categoryForm">
+        <input type="hidden" id="categoryId">
+        <div class="form-group">
+          <label for="categoryName">Name</label>
+          <input type="text" id="categoryName" placeholder="e.g., Programming" required>
+        </div>
+        <div class="form-group">
+          <label for="categorySlug">Slug</label>
+          <input type="text" id="categorySlug" placeholder="e.g., programming" required>
+        </div>
+        <div class="form-group">
+          <label for="categoryIcon">Icon (FontAwesome class)</label>
+          <input type="text" id="categoryIcon" placeholder="e.g., fas fa-code" value="fas fa-folder">
+        </div>
+        <div class="form-group">
+          <label for="categoryDescription">Description</label>
+          <textarea id="categoryDescription" placeholder="Category description"></textarea>
+        </div>
+        <button type="submit" class="auth-btn">Save Category</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Ban User Modal -->
+  <div class="modal" id="banModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Ban User</h2>
+        <button class="modal-close" onclick="closeModal('banModal')">&times;</button>
+      </div>
+      <form id="banForm">
+        <input type="hidden" id="banUserId">
+        <p id="banUserInfo" style="margin-bottom: 20px; padding: 12px; background: var(--bg-secondary); border-radius: var(--radius);"></p>
+        <div class="form-group">
+          <label for="banReason">Reason for Ban (Required)</label>
+          <textarea id="banReason" placeholder="Explain why this user is being banned..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Ban Type</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="banType" value="permanent" checked> Permanent
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="banType" value="temporary"> Temporary
+            </label>
+          </div>
+        </div>
+        <div class="form-group" id="banDurationGroup" style="display: none;">
+          <label for="banDuration">Duration (Days)</label>
+          <input type="number" id="banDuration" min="1" max="365" value="7" placeholder="Number of days">
+        </div>
+        <button type="submit" class="auth-btn" style="background: var(--error);">Confirm Ban</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- User Details Modal -->
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>User Details</h2>
+        <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
+      </div>
+      <div id="userDetails"></div>
+    </div>
+  </div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script>
+    let materials = [];
+    let users = [];
+    let categories = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initSupabase();
+      
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/pages/login.html';
+        return;
+      }
+      
+      const isAdminUser = await isAdmin();
+      if (!isAdminUser) {
+        window.location.href = '/pages/materials.html';
+        return;
+      }
+
+      const profile = await getUserProfile(user.id);
+      document.getElementById('adminName').textContent = profile?.full_name || user.email;
+      if (profile?.avatar_url) {
+        document.getElementById('adminAvatar').src = profile.avatar_url;
+      }
+      
+      await loadDashboard();
+      setupNavigation();
+      setupBanTypeToggle();
+    });
+
+    async function loadDashboard() {
+      materials = await getAllMaterials();
+      users = await getAllUsers();
+      categories = await getCategories();
+      const visitStats = await getVisitStats();
+      
+      document.getElementById('totalMaterials').textContent = materials.length;
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('todayVisits').textContent = visitStats.today;
+      document.getElementById('totalCategories').textContent = categories.length;
+      
+      document.getElementById('analyticsTotal').textContent = visitStats.total;
+      document.getElementById('analyticsToday').textContent = visitStats.today;
+      document.getElementById('analyticsWeek').textContent = visitStats.thisWeek;
+      document.getElementById('analyticsBanned').textContent = users.filter(u => u.is_banned).length;
+      
+      renderRecentMaterials();
+      renderAllMaterials();
+      renderCategories();
+      renderUsers();
+      updateCategoryDropdown();
+    }
+
+    function updateCategoryDropdown() {
+      const select = document.getElementById('materialCategory');
+      select.innerHTML = categories.map(c => 
+        `<option value="${c.slug}">${c.name}</option>`
+      ).join('') + '<option value="other">Other</option>';
+    }
+
+    function renderRecentMaterials() {
+      const tbody = document.getElementById('recentMaterialsTable');
+      const recent = materials.slice(0, 5);
+      
+      tbody.innerHTML = recent.length ? recent.map(m => `
+        <tr>
+          <td><img src="${m.image_url || 'https://via.placeholder.com/50?text=No+Image'}" class="table-img"></td>
+          <td>${m.title}</td>
+          <td><span class="material-category">${m.category || 'Other'}</span></td>
+          <td><span class="status-badge status-${m.status}">${m.status}</span></td>
+          <td>
+            <button class="action-btn" onclick="editMaterial('${m.id}')"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteMaterialItem('${m.id}')"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No materials yet</td></tr>';
+    }
+
+    function renderAllMaterials() {
+      const tbody = document.getElementById('allMaterialsTable');
+      
+      tbody.innerHTML = materials.length ? materials.map(m => `
+        <tr>
+          <td><img src="${m.image_url || 'https://via.placeholder.com/50?text=No+Image'}" class="table-img"></td>
+          <td>${m.title}</td>
+          <td>${m.description || '-'}</td>
+          <td><span class="material-category">${m.category || 'Other'}</span></td>
+          <td><span class="status-badge status-${m.status}">${m.status}</span></td>
+          <td>
+            <button class="action-btn" onclick="editMaterial('${m.id}')"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete" onclick="deleteMaterialItem('${m.id}')"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">No materials yet</td></tr>';
+    }
+
+    function renderCategories() {
+      const tbody = document.getElementById('categoriesTable');
+      
+      tbody.innerHTML = categories.length ? categories.map(c => {
+        const materialCount = materials.filter(m => m.category === c.slug).length;
+        return `
+          <tr>
+            <td><i class="${c.icon || 'fas fa-folder'}" style="font-size: 1.25rem; color: var(--primary);"></i></td>
+            <td><strong>${c.name}</strong></td>
+            <td><code style="background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px;">${c.slug}</code></td>
+            <td>${c.description || '-'}</td>
+            <td>${materialCount}</td>
+            <td>
+              <button class="action-btn" onclick="editCategory('${c.id}')"><i class="fas fa-edit"></i></button>
+              <button class="action-btn delete" onclick="deleteCategoryItem('${c.id}')"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('') : '<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">No categories yet. Add your first category!</td></tr>';
+    }
+
+    function renderUsers() {
+      const tbody = document.getElementById('usersTable');
+      
+      tbody.innerHTML = users.length ? users.map(u => `
+        <tr>
+          <td>
+            <div class="user-cell">
+              <img src="${u.avatar_url || 'https://via.placeholder.com/36?text=' + (u.full_name ? u.full_name[0].toUpperCase() : '?')}" class="user-avatar-small">
+              <span>${u.full_name || 'No Name'}</span>
+            </div>
+          </td>
+          <td>${u.email}</td>
+          <td>
+            <select onchange="changeUserRole('${u.id}', this.value)" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); padding: 6px 12px; border-radius: var(--radius-sm); font-size: 0.875rem;">
+              <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+            </select>
+          </td>
+          <td>
+            <span class="status-badge ${u.is_banned ? 'status-banned' : 'status-active'}">
+              ${u.is_banned ? 'Banned' : 'Active'}
+            </span>
+          </td>
+          <td>${new Date(u.created_at).toLocaleDateString()}</td>
+          <td>
+            <button class="action-btn" onclick="viewUser('${u.id}')"><i class="fas fa-eye"></i></button>
+            ${u.is_banned 
+              ? `<button class="action-btn" onclick="unbanUserAction('${u.id}')" title="Unban"><i class="fas fa-unlock"></i></button>`
+              : `<button class="action-btn ban" onclick="showBanModal('${u.id}')" title="Ban"><i class="fas fa-ban"></i></button>`
+            }
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">No users yet</td></tr>';
+    }
+
+    function setupNavigation() {
+      const navLinks = document.querySelectorAll('.sidebar-nav a[data-section]');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          navLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+          
+          document.querySelectorAll('.admin-section').forEach(s => s.style.display = 'none');
+          document.getElementById(`${link.dataset.section}Section`).style.display = 'block';
+        });
+      });
+    }
+
+    function setupBanTypeToggle() {
+      document.querySelectorAll('input[name="banType"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          document.getElementById('banDurationGroup').style.display = 
+            e.target.value === 'temporary' ? 'block' : 'none';
+        });
+      });
+    }
+
+    // Material Modal Functions
+    function showAddMaterialModal() {
+      document.getElementById('materialModalTitle').textContent = 'Add New Material';
+      document.getElementById('materialForm').reset();
+      document.getElementById('materialId').value = '';
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('materialImageUrl').value = '';
+      document.getElementById('materialModal').classList.add('active');
+    }
+
+    function editMaterial(id) {
+      const material = materials.find(m => m.id === id);
+      if (!material) return;
+      
+      document.getElementById('materialModalTitle').textContent = 'Edit Material';
+      document.getElementById('materialId').value = id;
+      document.getElementById('materialTitle').value = material.title;
+      document.getElementById('materialDescription').value = material.description || '';
+      document.getElementById('materialCategory').value = material.category || 'other';
+      document.getElementById('materialTelegram').value = material.telegram_link || '';
+      document.getElementById('materialStatus').value = material.status;
+      document.getElementById('materialImageUrl').value = material.image_url || '';
+      
+      if (material.image_url) {
+        document.getElementById('imagePreview').src = material.image_url;
+        document.getElementById('imagePreview').style.display = 'block';
+      } else {
+        document.getElementById('imagePreview').style.display = 'none';
+      }
+      
+      document.getElementById('materialModal').classList.add('active');
+    }
+
+    // Category Modal Functions
+    function showAddCategoryModal() {
+      document.getElementById('categoryModalTitle').textContent = 'Add New Category';
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryId').value = '';
+      document.getElementById('categoryIcon').value = 'fas fa-folder';
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    function editCategory(id) {
+      const category = categories.find(c => c.id === id);
+      if (!category) return;
+      
+      document.getElementById('categoryModalTitle').textContent = 'Edit Category';
+      document.getElementById('categoryId').value = id;
+      document.getElementById('categoryName').value = category.name;
+      document.getElementById('categorySlug').value = category.slug;
+      document.getElementById('categoryIcon').value = category.icon || 'fas fa-folder';
+      document.getElementById('categoryDescription').value = category.description || '';
+      
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    // Ban Modal Functions
+    function showBanModal(userId) {
+      const user = users.find(u => u.id === userId);
+      if (!user) return;
+      
+      document.getElementById('banUserId').value = userId;
+      document.getElementById('banUserInfo').textContent = `Banning: ${user.full_name || user.email}`;
+      document.getElementById('banForm').reset();
+      document.getElementById('banDurationGroup').style.display = 'none';
+      document.getElementById('banModal').classList.add('active');
+    }
+
+    async function viewUser(id) {
+      const user = users.find(u => u.id === id);
+      if (!user) return;
+      
+      const banHistory = await getUserBanHistory(id);
+      
+      let html = `
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <img src="${user.avatar_url || 'https://via.placeholder.com/60?text=' + (user.full_name ? user.full_name[0].toUpperCase() : '?')}" 
+                 style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+            <div>
+              <h3 style="margin: 0;">${user.full_name || 'No Name'}</h3>
+              <p style="margin: 4px 0 0; color: var(--text-secondary);">${user.email}</p>
+            </div>
+          </div>
+          <div style="display: grid; gap: 12px;">
+            <div><strong>Role:</strong> <span class="status-badge ${user.role === 'admin' ? 'status-published' : 'status-active'}">${user.role}</span></div>
+            <div><strong>Status:</strong> <span class="status-badge ${user.is_banned ? 'status-banned' : 'status-active'}">${user.is_banned ? 'Banned' : 'Active'}</span></div>
+            <div><strong>Joined:</strong> ${new Date(user.created_at).toLocaleString()}</div>
+            <div><strong>Bio:</strong> ${user.bio || 'No bio'}</div>
+          </div>
+        </div>
+      `;
+      
+      if (banHistory.length > 0) {
+        html += `
+          <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+            <h4 style="margin-bottom: 16px;">Ban History</h4>
+            ${banHistory.map(ban => `
+              <div style="padding: 12px; background: var(--bg-secondary); border-radius: var(--radius); margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <span class="status-badge ${ban.is_active ? 'status-banned' : 'status-draft'}">${ban.is_active ? 'Active' : 'Expired'}</span>
+                  <span style="color: var(--text-secondary); font-size: 0.875rem;">${new Date(ban.created_at).toLocaleDateString()}</span>
+                </div>
+                <p style="margin: 0;"><strong>Reason:</strong> ${ban.reason}</p>
+                <p style="margin: 4px 0 0; font-size: 0.875rem; color: var(--text-secondary);">
+                  ${ban.ban_type === 'permanent' ? 'Permanent ban' : `Until: ${ban.ban_until ? new Date(ban.ban_until).toLocaleDateString() : 'N/A'}`}
+                </p>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      
+      document.getElementById('userDetails').innerHTML = html;
+      document.getElementById('userModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('imagePreview').src = e.target.result;
+          document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Form Submissions
+    document.getElementById('materialForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('materialId').value;
+      const title = document.getElementById('materialTitle').value;
+      const description = document.getElementById('materialDescription').value;
+      const category = document.getElementById('materialCategory').value;
+      const telegramLink = document.getElementById('materialTelegram').value;
+      const status = document.getElementById('materialStatus').value;
+      let imageUrl = document.getElementById('materialImageUrl').value;
+      
+      const imageInput = document.getElementById('imageInput');
+      if (imageInput.files && imageInput.files[0]) {
+        const result = await uploadImage(imageInput.files[0]);
+        if (result.url) {
+          imageUrl = result.url;
+        } else if (result.error) {
+          alert('Failed to upload image: ' + result.error.message);
+          return;
+        }
+      }
+      
+      if (id) {
+        await updateMaterial(id, {
+          title,
+          description,
+          category,
+          telegram_link: telegramLink,
+          image_url: imageUrl,
+          status
+        });
+      } else {
+        await addMaterial(title, description, imageUrl, telegramLink, category);
+      }
+      
+      closeModal('materialModal');
+      await loadDashboard();
+    });
+
+    document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('categoryId').value;
+      const name = document.getElementById('categoryName').value;
+      const slug = document.getElementById('categorySlug').value.toLowerCase().replace(/\s+/g, '-');
+      const icon = document.getElementById('categoryIcon').value;
+      const description = document.getElementById('categoryDescription').value;
+      
+      if (id) {
+        await updateCategory(id, { name, slug, icon, description });
+      } else {
+        await addCategory(name, slug, icon, description);
+      }
+      
+      closeModal('categoryModal');
+      await loadDashboard();
+    });
+
+    document.getElementById('banForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const userId = document.getElementById('banUserId').value;
+      const reason = document.getElementById('banReason').value;
+      const banType = document.querySelector('input[name="banType"]:checked').value;
+      const duration = banType === 'temporary' ? document.getElementById('banDuration').value : null;
+      
+      const { error } = await banUser(userId, reason, banType, duration);
+      
+      if (error) {
+        alert('Failed to ban user: ' + error.message);
+      } else {
+        closeModal('banModal');
+        await loadDashboard();
+      }
+    });
+
+    async function deleteMaterialItem(id) {
+      if (confirm('Are you sure you want to delete this material?')) {
+        await deleteMaterial(id);
+        await loadDashboard();
+      }
+    }
+
+    async function deleteCategoryItem(id) {
+      const category = categories.find(c => c.id === id);
+      const materialCount = materials.filter(m => m.category === category?.slug).length;
+      
+      if (materialCount > 0) {
+        alert(`Cannot delete this category. It has ${materialCount} materials. Please reassign or delete them first.`);
+        return;
+      }
+      
+      if (confirm('Are you sure you want to delete this category?')) {
+        await deleteCategory(id);
+        await loadDashboard();
+      }
+    }
+
+    async function changeUserRole(userId, role) {
+      await updateUserRole(userId, role);
+      await loadDashboard();
+    }
+
+    async function unbanUserAction(userId) {
+      if (confirm('Are you sure you want to unban this user?')) {
+        await unbanUser(userId);
+        await loadDashboard();
+      }
+    }
+
+    async function handleLogout() {
+      await signOut();
+      window.location.href = '/';
+    }
+
+    // Auto-generate slug from name
+    document.getElementById('categoryName').addEventListener('input', (e) => {
+      const slugField = document.getElementById('categorySlug');
+      if (!document.getElementById('categoryId').value) {
+        slugField.value = e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      }
+    });
+  </script>
+</body>
+</html>
