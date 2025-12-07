@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - StudyHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <a href="/" class="logo">StudyHub</a>
+      <ul class="sidebar-nav">
+        <li><a href="#dashboard" class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+        <li><a href="#materials" data-section="materials"><i class="fas fa-book"></i> Materials</a></li>
+        <li><a href="#categories" data-section="categories"><i class="fas fa-folder"></i> Categories</a></li>
+        <li><a href="#users" data-section="users"><i class="fas fa-users"></i> Users</a></li>
+        <li><a href="#analytics" data-section="analytics"><i class="fas fa-chart-line"></i> Analytics</a></li>
+        <li><a href="/" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="admin-main">
+      <!-- Dashboard Section -->
+      <div id="dashboardSection" class="admin-section">
+        <div class="admin-header">
+          <h1>Dashboard</h1>
+          <div class="admin-user">
+            <span id="adminName">Admin</span>
+            <img id="adminAvatar" src="https://via.placeholder.com/40?text=A" alt="Admin" style="width: 40px; height: 40px; border-radius: 50%;">
+          </div>
+        </div>
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span>Total Materials</span>
+              <i class="fas fa-book"></i>
+            </div>
