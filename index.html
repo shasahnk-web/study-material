@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyHub - Premium Study Materials</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">StudyHub</a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#categories">Categories</a></li>
+        <li><a href="/materials">Materials</a></li>
+      </ul>
+      <div id="navRight">
+        <a href="/login" class="nav-btn">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>Unlock Your <span>Learning Potential</span></h1>
+          <p>Access premium study materials, notes, and resources curated by experts. Join thousands of students achieving their academic goals.</p>
+          <div class="hero-buttons">
+            <a href="/login" class="btn-primary" id="heroBtn">
+              <i class="fas fa-rocket"></i> Start Learning
+            </a>
+            <a href="#features" class="btn-secondary">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="hero-card">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>10,000+ Students</h3>
+            <p>Trust our premium materials</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" id="statMaterials">500+</div>
+          <div class="stat-label">Study Materials</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="statCategories">50+</div>
+          <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="statUsers">10K+</div>
+          <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Choose StudyHub?</h2>
+        <p>We provide the best learning experience with curated resources</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3>Curated Content</h3>
+          <p>All materials are carefully selected and verified by subject matter experts</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Instant Access</h3>
+          <p>Get immediate access to all materials through our Telegram channels</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-sync"></i>
+          </div>
+          <h3>Regular Updates</h3>
+          <p>New materials added weekly to keep you ahead in your studies</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Community</h3>
+          <p>Join a community of learners and share knowledge together</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Mobile Friendly</h3>
+          <p>Access your materials anytime, anywhere on any device</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3>Secure Access</h3>
+          <p>Your data is protected with industry-standard security</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-title">
+        <h2>Browse Categories</h2>
+        <p>Find materials for your specific needs</p>
+      </div>
+      <div class="categories-grid" id="categoriesGrid">
+        <div class="category-card" onclick="window.location.href='/materials'">
+          <i class="fas fa-spinner fa-spin"></i>
+          <h4>Loading...</h4>
+          <span>Please wait</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Start Learning?</h2>
+        <p>Join thousands of students who are already benefiting from our premium study materials</p>
+        <a href="/signup" class="btn-primary">Create Free Account</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="/" class="logo">StudyHub</a>
+          <p>Your gateway to premium study materials and academic success.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/materials">Materials</a></li>
+            <li><a href="#features">Features</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/signup">Sign Up</a></li>
+            <li><a href="/profile">Profile</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>2024 StudyHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      initSupabase();
+      
+      const user = await getCurrentUser();
+      const navRight = document.getElementById('navRight');
+      const heroBtn = document.getElementById('heroBtn');
+      
+      if (user) {
+        const profile = await getUserProfile(user.id);
+        const isAdminUser = await isAdmin();
+        
+        if (isAdminUser) {
+          navRight.innerHTML = `
+            <a href="/admin" class="nav-btn"><i class="fas fa-cog"></i> Admin Panel</a>
+          `;
+          heroBtn.href = '/admin';
+          heroBtn.innerHTML = '<i class="fas fa-cog"></i> Admin Panel';
+        } else {
+          navRight.innerHTML = `
+            <div class="nav-right">
+              <a href="/profile" style="display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 500;">
+                <img src="${profile?.avatar_url || 'https://via.placeholder.com/36?text=' + (profile?.full_name ? profile.full_name[0].toUpperCase() : '?')}" class="user-avatar">
+                ${profile?.full_name || 'Profile'}
+              </a>
+              <a href="/materials" class="nav-btn" style="margin-left: 12px;">Browse Materials</a>
+            </div>
+          `;
+          heroBtn.href = '/materials';
+          heroBtn.innerHTML = '<i class="fas fa-book"></i> Browse Materials';
+        }
+      }
+      
+      await loadCategories();
+    });
+
+    async function loadCategories() {
+      const categories = await getCategories();
+      const grid = document.getElementById('categoriesGrid');
+      
+      if (categories.length === 0) {
+        grid.innerHTML = `
+          <div class="category-card" onclick="window.location.href='/materials'">
+            <i class="fas fa-book"></i>
+            <h4>All Materials</h4>
+            <span>Browse all</span>
+          </div>
+        `;
+        return;
+      }
+      
+      const materials = await getMaterials();
+      
+      grid.innerHTML = categories.slice(0, 7).map(c => {
+        const count = materials.filter(m => m.category === c.slug).length;
+        return `
+          <div class="category-card" onclick="window.location.href='/materials?category=${c.slug}'">
+            <i class="${c.icon || 'fas fa-folder'}"></i>
+            <h4>${c.name}</h4>
+            <span>${count}+ Materials</span>
+          </div>
+        `;
+      }).join('') + `
+        <div class="category-card" onclick="window.location.href='/materials'">
+          <i class="fas fa-ellipsis-h"></i>
+          <h4>View All</h4>
+          <span>${categories.length} Categories</span>
+        </div>
+      `;
+      
+      document.getElementById('statCategories').textContent = categories.length + '+';
+      document.getElementById('statMaterials').textContent = materials.length + '+';
+    }
+  </script>
+</body>
+</html>
