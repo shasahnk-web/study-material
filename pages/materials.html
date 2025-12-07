@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Materials - StudyHub</title>
+  <title>Study Materials - AJ Study Material</title>
+  <meta name="description" content="Browse our collection of premium study materials, notes, and educational resources. Find materials for all subjects and exam preparations.">
+  <meta name="keywords" content="study materials, educational resources, notes, exam preparation, learning materials">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,13 +16,13 @@
 <body>
   <nav class="navbar">
     <div class="container">
-      <a href="/" class="logo">StudyHub</a>
+      <a href="/" class="logo"><img src="/logo.png" alt="AJ Study Material" style="height: 40px;"></a>
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
-        <li><a href="/materials" class="active">Materials</a></li>
+        <li><a href="/pages/materials.html" class="active">Materials</a></li>
       </ul>
       <div id="authButtons">
-        <a href="/login" class="nav-btn">Login</a>
+        <a href="/pages/login.html" class="nav-btn">Login</a>
       </div>
     </div>
   </nav>
@@ -42,7 +47,7 @@
   <footer class="footer" style="margin-top: 60px;">
     <div class="container">
       <div class="footer-bottom">
-        <p>2024 StudyHub. All rights reserved.</p>
+        <p>2024 AJ Study Material. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -61,18 +66,15 @@
       const authButtons = document.getElementById('authButtons');
       
       if (user) {
-        const banStatus = await checkUserBan();
-        if (banStatus && banStatus.is_active) {
-          showBanNotice(banStatus);
-          return;
-        }
+        const wasBanned = await enforceUserBan();
+        if (wasBanned) return;
         
         const profile = await getUserProfile(user.id);
         const isAdminUser = await isAdmin();
         authButtons.innerHTML = `
           <div class="nav-right">
-            ${isAdminUser ? '<a href="/admin" class="nav-btn" style="margin-right: 10px;">Admin</a>' : ''}
-            <a href="/profile" style="display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 500;">
+            ${isAdminUser ? '<a href="/admin/index.html" class="nav-btn" style="margin-right: 10px;">Admin</a>' : ''}
+            <a href="/pages/profile.html" style="display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 500;">
               <img src="${profile?.avatar_url || 'https://via.placeholder.com/36?text=' + (profile?.full_name ? profile.full_name[0].toUpperCase() : '?')}" class="user-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
               ${profile?.full_name || 'Profile'}
             </a>
