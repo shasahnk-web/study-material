@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - StudyHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="auth-header">
+        <a href="/" class="logo">StudyHub</a>
+        <h2>Create Account</h2>
+        <p>Join thousands of students on StudyHub</p>
+      </div>
+      
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 12px; border-radius: 8px; margin-bottom: 20px;"></div>
+      
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Create a password (min 6 characters)" required minlength="6">
+        </div>
+        <button type="submit" class="auth-btn">Create Account</button>
+      </form>
+      
+      <p class="auth-footer">
+        Already have an account? <a href="/login">Sign In</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      initSupabase();
+      
+      const user = await getCurrentUser();
+      if (user) {
+        window.location.href = '/materials';
+      }
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      
+      const { data, error } = await signUp(email, password, fullName);
+      
+      if (error) {
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+      } else {
+        errorMessage.style.display = 'none';
+        successMessage.textContent = 'Account created successfully! Please check your email to verify your account, then login.';
+        successMessage.style.display = 'block';
+        document.getElementById('signupForm').reset();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Materials - StudyHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">StudyHub</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/materials" class="active">Materials</a></li>
+      </ul>
+      <div id="authButtons">
+        <a href="/login" class="nav-btn">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="materials-page">
+    <div class="container">
+      <div class="materials-header">
+        <h1>Study Materials</h1>
+        <p>Browse our collection of premium study resources</p>
+      </div>
+
+      <div class="materials-filter" id="filterContainer">
+        <button class="filter-btn active" data-category="all">All</button>
+      </div>
+
+      <div class="materials-grid" id="materialsGrid">
+        <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">Loading materials...</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" style="margin-top: 60px;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>2024 StudyHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script>
+    let allMaterials = [];
+    let allCategories = [];
+    let currentCategory = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initSupabase();
+      
+      const user = await getCurrentUser();
+      const authButtons = document.getElementById('authButtons');
+      
+      if (user) {
+        const banStatus = await checkUserBan();
+        if (banStatus && banStatus.is_active) {
+          showBanNotice(banStatus);
+          return;
+        }
+        
+        const profile = await getUserProfile(user.id);
+        const isAdminUser = await isAdmin();
+        authButtons.innerHTML = `
+          <div class="nav-right">
+            ${isAdminUser ? '<a href="/admin" class="nav-btn" style="margin-right: 10px;">Admin</a>' : ''}
+            <a href="/profile" style="display: flex; align-items: center; gap: 8px; color: var(--text-primary); font-weight: 500;">
+              <img src="${profile?.avatar_url || 'https://via.placeholder.com/36?text=' + (profile?.full_name ? profile.full_name[0].toUpperCase() : '?')}" class="user-avatar" style="width: 36px; height: 36px; border-radius: 50%;">
+              ${profile?.full_name || 'Profile'}
+            </a>
+            <button onclick="handleLogout()" class="nav-btn" style="margin-left: 10px;">Logout</button>
+          </div>
+        `;
+        await trackVisit(user.id);
+      }
+      
+      await loadCategories();
+      await loadMaterials();
+      setupFilters();
+    });
+
+    function showBanNotice(banStatus) {
+      document.body.innerHTML = `
+        <div class="ban-notice">
+          <i class="fas fa-ban" style="font-size: 3rem; margin-bottom: 20px;"></i>
+          <h2>Account Suspended</h2>
+          <p>Your account has been suspended by an administrator.</p>
+          <div class="ban-reason">
+            <strong>Reason:</strong> ${banStatus.reason}
+          </div>
+          <p>${banStatus.ban_until ? 'Suspended until: ' + new Date(banStatus.ban_until).toLocaleDateString() : 'This is a permanent suspension.'}</p>
+          <button onclick="handleLogout()" class="btn-primary" style="margin-top: 20px; background: white; color: var(--error);">Logout</button>
+        </div>
+      `;
+    }
+
+    async function loadCategories() {
+      allCategories = await getCategories();
+      renderFilters();
+    }
+
+    function renderFilters() {
+      const container = document.getElementById('filterContainer');
+      container.innerHTML = `
+        <button class="filter-btn active" data-category="all">All</button>
+        ${allCategories.map(c => `
+          <button class="filter-btn" data-category="${c.slug}">
+            <i class="${c.icon}" style="margin-right: 6px;"></i>${c.name}
+          </button>
+        `).join('')}
+      `;
+    }
+
+    async function loadMaterials() {
+      allMaterials = await getMaterials();
+      renderMaterials();
+    }
+
+    function renderMaterials() {
+      const grid = document.getElementById('materialsGrid');
+      let filtered = allMaterials;
+      
+      if (currentCategory !== 'all') {
+        filtered = allMaterials.filter(m => m.category === currentCategory);
+      }
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1;">No materials found in this category.</p>';
+        return;
+      }
+      
+      grid.innerHTML = filtered.map(material => {
+        const category = allCategories.find(c => c.slug === material.category);
+        return `
+          <div class="material-card">
+            <img src="${material.image_url || 'https://via.placeholder.com/400x200?text=Study+Material'}" alt="${material.title}" class="material-image">
+            <div class="material-content">
+              <span class="material-category">
+                ${category ? `<i class="${category.icon}" style="margin-right: 4px;"></i>` : ''}${category?.name || material.category || 'General'}
+              </span>
+              <h3>${material.title}</h3>
+              <p>${material.description || 'Premium study material available on Telegram'}</p>
+              <button class="material-btn" onclick="accessMaterial('${material.telegram_link}')">
+                <i class="fab fa-telegram"></i> Access on Telegram
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setupFilters() {
+      document.getElementById('filterContainer').addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.dataset.category;
+        renderMaterials();
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('category');
+      if (category) {
+        setTimeout(() => {
+          const btn = document.querySelector(`[data-category="${category}"]`);
+          if (btn) {
+            btn.click();
+          }
+        }, 100);
+      }
+    }
+
+    function accessMaterial(telegramLink) {
+      if (telegramLink) {
+        window.open(telegramLink, '_blank');
+      } else {
+        alert('Telegram link not available');
+      }
+    }
+
+    async function handleLogout() {
+      await signOut();
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - StudyHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">StudyHub</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/materials">Materials</a></li>
+        <li><a href="/profile" class="active">Profile</a></li>
+      </ul>
+      <div id="authButtons">
+        <a href="/login" class="nav-btn">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="profile-page">
+    <div class="profile-container">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar-container">
+            <img id="profileAvatar" src="https://via.placeholder.com/100?text=?" alt="Profile" class="profile-avatar">
+            <label class="avatar-upload-btn" for="avatarInput">
+              <i class="fas fa-camera"></i>
+              <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            </label>
+          </div>
+          <div class="profile-info">
+            <h1 id="profileName">Loading...</h1>
+            <p id="profileEmail">-</p>
+            <p id="profileRole" style="margin-top: 8px;"><span class="status-badge status-active">User</span></p>
+          </div>
+        </div>
+
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+          </div>
+          <button type="submit" class="auth-btn">Save Changes</button>
+        </form>
+      </div>
+
+      <div class="profile-card" id="banNotice" style="display: none;">
+        <h3 style="color: var(--error); margin-bottom: 16px;"><i class="fas fa-exclamation-triangle"></i> Account Suspended</h3>
+        <p id="banReason" style="margin-bottom: 8px;"></p>
+        <p id="banUntil" style="color: var(--text-secondary);"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" style="margin-top: 60px;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>2024 StudyHub. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/supabase.js"></script>
+  <script>
+    let currentProfile = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initSupabase();
+      
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+      
+      const authButtons = document.getElementById('authButtons');
+      const isAdminUser = await isAdmin();
+      authButtons.innerHTML = `
+        ${isAdminUser ? '<a href="/admin" class="nav-btn" style="margin-right: 10px;">Admin</a>' : ''}
+        <button onclick="handleLogout()" class="nav-btn">Logout</button>
+      `;
+
+      await loadProfile(user.id);
+      setupAvatarUpload();
+      
+      const banStatus = await checkUserBan();
+      if (banStatus && banStatus.is_active) {
+        showBanNotice(banStatus);
+      }
+    });
+
+    async function loadProfile(userId) {
+      currentProfile = await getUserProfile(userId);
+      const user = await getCurrentUser();
+      
+      if (currentProfile) {
+        document.getElementById('profileName').textContent = currentProfile.full_name || 'No Name';
+        document.getElementById('profileEmail').textContent = user.email;
+        document.getElementById('fullName').value = currentProfile.full_name || '';
+        document.getElementById('bio').value = currentProfile.bio || '';
+        
+        if (currentProfile.avatar_url) {
+          document.getElementById('profileAvatar').src = currentProfile.avatar_url;
+        }
+        
+        const roleText = currentProfile.role === 'admin' ? 'Admin' : 'User';
+        const roleClass = currentProfile.role === 'admin' ? 'status-published' : 'status-active';
+        document.getElementById('profileRole').innerHTML = `<span class="status-badge ${roleClass}">${roleText}</span>`;
+      }
+    }
+
+    function setupAvatarUpload() {
+      document.getElementById('avatarInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const result = await uploadAvatar(file);
+        if (result.url) {
+          document.getElementById('profileAvatar').src = result.url;
+        } else if (result.error) {
+          alert('Failed to upload avatar: ' + result.error.message);
+        }
+      });
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const fullName = document.getElementById('fullName').value;
+      const bio = document.getElementById('bio').value;
+      
+      const { error } = await updateProfile({ full_name: fullName, bio: bio });
+      
+      if (error) {
+        alert('Failed to update profile: ' + error.message);
+      } else {
+        alert('Profile updated successfully!');
+        document.getElementById('profileName').textContent = fullName || 'No Name';
+      }
+    });
+
+    function showBanNotice(banStatus) {
+      const notice = document.getElementById('banNotice');
+      notice.style.display = 'block';
+      document.getElementById('banReason').textContent = `Reason: ${banStatus.reason}`;
+      
+      if (banStatus.ban_until) {
+        document.getElementById('banUntil').textContent = `Suspended until: ${new Date(banStatus.ban_until).toLocaleDateString()}`;
+      } else {
+        document.getElementById('banUntil').textContent = 'This is a permanent suspension.';
+      }
+    }
+
+    async function handleLogout() {
+      await signOut();
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>
