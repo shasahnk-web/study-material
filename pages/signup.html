@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - StudyHub</title>
+  <title>Sign Up - AJ Study Material</title>
+  <meta name="description" content="Create a free account on AJ Study Material and access premium study materials, notes, and educational resources.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,9 +16,9 @@
   <div class="auth-page">
     <div class="auth-container">
       <div class="auth-header">
-        <a href="/" class="logo">StudyHub</a>
+        <a href="/" class="logo"><img src="/logo.png" alt="AJ Study Material" style="height: 40px;"></a>
         <h2>Create Account</h2>
-        <p>Join thousands of students on StudyHub</p>
+        <p>Join thousands of students on AJ Study Material</p>
       </div>
       
       <div class="error-message" id="errorMessage"></div>
@@ -37,7 +41,7 @@
       </form>
       
       <p class="auth-footer">
-        Already have an account? <a href="/login">Sign In</a>
+        Already have an account? <a href="/pages/login.html">Sign In</a>
       </p>
     </div>
   </div>
@@ -50,7 +54,7 @@
       
       const user = await getCurrentUser();
       if (user) {
-        window.location.href = '/materials';
+        window.location.href = '/pages/materials.html';
       }
     });
 
